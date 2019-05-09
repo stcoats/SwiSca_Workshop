@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import folium
 import pandas as pd
-import html
-import branca
 import glob
 from pandas.io.json import json_normalize
-import re
-import os
-import random
 import argparse
-from variables import words
 
 parser = argparse.ArgumentParser("archive")
 parser.add_argument("archive_dir", nargs='?', default='./', action="store",
