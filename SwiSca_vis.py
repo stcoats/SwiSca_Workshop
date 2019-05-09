@@ -45,7 +45,6 @@ def linkify(raw_message):
         else:
             href = url
         message = message.replace(url, '<a href="%s" target="_blank">%s</a>' % (href, url))
-
     return message
 
 locations_df = pd.DataFrame()
@@ -83,7 +82,6 @@ colors = ['#e6194b', '#3cb44b', '#ffe119',
     '#e6beff', '#9a6324', '#fffac8', '#800000',
     '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080']
 #colors = get_colors(len(words))
-
 
 for z,x in enumerate(words):
     df = locations_df[locations_df["tex"].str.contains("\\b"+x+".+?\\b", regex = True)].reset_index(drop=True)

@@ -43,7 +43,6 @@ class listener(StreamListener):
                 print(text+"\n")
                 self.counter += 1
                 
-
                 if self.counter >= 500:
                         self.output.close()
                         directory = './tweetdata/' + time.strftime('%Y%m%d')
@@ -54,18 +53,11 @@ class listener(StreamListener):
                 return
             else:
                 pass
-          
-        
         else:
             pass 
     def on_error(self, status):
         print(status)
 
-    
-        
-        
-
-    
 auth = OAuthHandler(consumer_key.rstrip(), consumer_secret.rstrip())
 auth.set_access_token(api_key.rstrip(), api_secret.rstrip())
 
@@ -81,5 +73,4 @@ while True:
         print("Error. Restarting Stream.... Error: ")
         print(e.__doc__)
         print(e.message)
-    
 
