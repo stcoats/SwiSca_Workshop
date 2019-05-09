@@ -1,5 +1,5 @@
 
-##SwiSca_Workshop
+## SwiSca_Workshop
 
 Some instructions, scripts, and examples for the workshop "Swearing on Twitter" at the [6th Swearing in Scandinavia symposium](https://swisca.wixsite.com/swisca6)
 
