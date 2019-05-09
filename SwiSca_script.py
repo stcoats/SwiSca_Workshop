@@ -8,13 +8,19 @@ from http.client import IncompleteRead
 from tweepy import API
 import os
 from my_twitter_tokens import consumer_key,consumer_secret,api_key,api_secret
+from variables import words
+import argparse
 
 class listener(StreamListener):
 
     def __init__(self,api = None):
         self.api = api or API()
         todayDate = time.strftime('%Y%m%d')
-        directory = './tweetdata/' + todayDate
+        parser = argparse.ArgumentParser("archive")
+        parser.add_argument("archive_dir", nargs='?', default='./', action="store",
+                        help="a directory where results are stored")
+        args = parser.parse_args()
+        directory = './'+args.archive_dir+'/tweetdata/' + todayDate
         if not os.path.exists(directory):
            os.makedirs(directory)
         filenameStart = 'streamer.' + time.strftime('%Y%m%d-%H%M%S') + '.json'
@@ -30,7 +36,7 @@ class listener(StreamListener):
                     if 'full_text' in all_data['extended_tweet']:
                         text = all_data['extended_tweet']['full_text']
                     else:
-                        pass 
+                        pass # i need to figure out what is possible here
                 elif 'text' in all_data:
                     text = all_data['text']
                 self.output.write(bytes(data,"UTF-8"))
@@ -63,18 +69,17 @@ class listener(StreamListener):
 auth = OAuthHandler(consumer_key.rstrip(), consumer_secret.rstrip())
 auth.set_access_token(api_key.rstrip(), api_secret.rstrip())
 
-words = ["fuck","shit","damn","cunt","bitch","nigger","ass","arse"]
-
 while True:
-            try:
-                twitterStream = Stream(auth, listener(), tweet_mode='extended')
-                #twitterStream.filter(locations=[19,59,32,70], stall_warnings = True)
-                twitterStream.filter(track=words)
-                #twitterStream.filter(languages=["sv"], track=["helvete","satan","fan","jävlä","fanme","skit","skiten","jävel","tusan","röven","kuk","fitta"])
-            except KeyboardInterrupt:
-                # Or however you want to exit this loop
-                stream.disconnect()
-            except: 
-                continue
+    twitterStream = Stream(auth, listener(), tweet_mode='extended', timeout=60)
+    #twitterStream.filter(locations=[19,59,32,70], stall_warnings = True)
+    twitterStream.filter(track=words)
+    #twitterStream.filter(languages=["sv","fi","no","da"], track = words)
+    try:
+        twitterStream.userstream()
+                
+    except Exception as e:
+        print("Error. Restarting Stream.... Error: ")
+        print(e.__doc__)
+        print(e.message)
     
 

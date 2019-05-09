@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-words = ["fuck","shit","damn","cunt","bitch","nigger","ass","arse"]
+words = ["darn","shucks","gosh","phooey"]

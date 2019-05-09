@@ -10,12 +10,17 @@ import re
 import os
 import webbrowser
 import random
+import argparse
 from variables import words
 
-#df = pd.DataFrame(place_coords)
-#df = pd.read_json("/home/cloud-user/taito_wrk/DONOTREMOVE/tweetdata/20170110/streamer.20170110-000126.json")
-filepath = './map.html'
-files = glob.glob("./tweetdata/*/streamer*.json")
+parser = argparse.ArgumentParser("archive")
+parser.add_argument("archive_dir", nargs='?', default='./', action="store",
+                help="a directory where results are stored")
+args = parser.parse_args()
+filepath = './'+args.archive_dir+'/tweetdata/'
+#filepath = os.path.abspath("./tweetdata")
+filepath1 = filepath+'/map.html'
+files = [x for y in [glob.glob(e, recursive = True) for e in [filepath+'/**/*.json',filepath+'/*.jsonl',filepath+'/*.gz']] for x in y]
 def centr(coords):
     return [(coords[0][0][0]+coords[0][1][0])/2,(coords[0][0][1]+coords[0][1][1])/2]
 
@@ -45,20 +50,27 @@ def linkify(raw_message):
 
 locations_df = pd.DataFrame()
 for x in files:
-    df = pd.read_json(x, lines = True)
-    try:
-        df1 = df.loc[(df["coordinates"].notnull())|(df["place"].notnull())].reset_index(drop=True).copy()
-        df1["coords"] = df1["coordinates"].fillna(df1["place"])
-        df1["coords"] = json_normalize(df1["coords"])["coordinates"].fillna(json_normalize(df1["coords"])["bounding_box.coordinates"])#.apply(lambda x:centr(x))
-        df1["coords"] = [x if len(x)!=1 else centr(x) for x in df1["coords"]]
-        #df1["coords"] = b["coordinates"].copy()#json_normalize(df1["coordinates"])["coordinates"]
-        #print(len(b),len(df1))
-        #df.columns = ["text","lat","lon"]
-        df1["tex"] = [x["text"] if str(x["extended_tweet"]) == "nan" else json_normalize(x["extended_tweet"])["full_text"][0] for i,x in df1.iterrows()]
-        df1["coords"] = [x[::-1] for x in df1["coords"]]
-        locations_df = locations_df.append(df1[["coords","tex"]])
-    except:
-        continue
+    if x.endswith(("json","jsonl","gz")):
+        try:
+            df = pd.read_json(x, lines = True, compression = "infer")
+        except:
+            continue
+        try:
+            df1 = df.loc[(df["coordinates"].notnull())|(df["place"].notnull())].reset_index(drop=True).copy()
+            df1["coords"] = df1["coordinates"].fillna(df1["place"])
+            df1["coords"] = df1["coordinates"].fillna(json_normalize(df1["coords"])["bounding_box.coordinates"])
+            df1["coords"] = [x if len(x)!=1 else centr(x) for x in df1["coords"]]
+            if "extended_tweet" in df1.columns:
+                df1["tex"] = [x["text"] if str(x["extended_tweet"]) == "nan" else json_normalize(x["extended_tweet"])["full_text"][0] for i,x in df1.iterrows()]
+                df1["coords"] = [x[::-1] for x in df1["coords"]]
+                locations_df = locations_df.append(df1[["coords","tex"]])
+            else:
+                df1["tex"] = df1["full_text"]
+                df1["coords"] = [x[::-1] for x in df1["coords"]]
+                locations_df = locations_df.append(df1[["coords","tex"]])
+        except:
+            continue
+
 locations_df["tex"] = locations_df["tex"].str.replace("´|`", "'")
 locations_df = locations_df[locations_df.notnull()]
 #create a map
@@ -72,8 +84,9 @@ colors = ['#e6194b', '#3cb44b', '#ffe119',
     '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080']
 #colors = get_colors(len(words))
 
+
 for z,x in enumerate(words):
-    df = locations_df[locations_df["tex"].str.contains("\\b"+x+".+?\\b", regex = True)]
+    df = locations_df[locations_df["tex"].str.contains("\\b"+x+".+?\\b", regex = True)].reset_index(drop=True)
     fgv = folium.FeatureGroup(name=x)
     for i,y in df.iterrows():
         
@@ -90,12 +103,14 @@ for z,x in enumerate(words):
                             name=x))#.add_to(this_map)
         this_map.add_child(fgv)
 folium.LayerControl().add_to(this_map)
+#use df.apply(,axis=1) to "iterate" through every row in your dataframe
+#locations_df.apply(plotDot, axis = 1)
 
 this_map.fit_bounds(this_map.get_bounds())
 #Set the zoom to the maximum possible
-this_map.save(filepath)
+this_map.save(filepath1)
 
 #Save the map to an HTML file
-this_map.save(filepath)
-webbrowser.open('file://' + os.path.abspath(filepath))
+#this_map.save('/home/cloud-user/taito_wrk/DONOTREMOVE/Hackathon19/simple_dot_plot.html')
+webbrowser.open('file://' + os.path.abspath(filepath1))
 
