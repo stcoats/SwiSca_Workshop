@@ -11,7 +11,7 @@ Then, use the following two step-by-step documents:
 
 [Workshop I](https://stcoats.github.io/SwiSca1.html) to set up Python and the necessary dependency libraries, register a Twitter account and get developer credentials.
 
-[Workshop II](https://stcoats.github.io/SwiSca2.html) to collect data from the Streaming and REST APIs using simple scripts and to create a map of those tweets.
+[Workshop II](https://stcoats.github.io/SwiSca2.html) to collect data from the Streaming and REST APIs using simple scripts, to create interactive tweet maps, and to create csv files of tweet texts.
 
 The scripts in the folder can handle the "extended_tweet" metadata introduced in November 2017, introduced to allow users to post up to 280 characers.
 
