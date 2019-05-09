@@ -13,7 +13,7 @@ Then, use the following two step-by-step documents:
 
 [Workshop II](https://stcoats.github.io/SwiSca2.html) to collect data from the Streaming and REST APIs using simple scripts, to create interactive tweet maps, and to create csv files of tweet texts.
 
-The scripts in the folder can handle the "extended_tweet" metadata introduced in November 2017, introduced to allow users to post up to 280 characers.
+The scripts in the folder can handle the "extended_tweet" metadata introduced in November 2017, introduced to allow users to post up to 280 characers. The location metadata for the mapping script is either exact point information (usually from a GPS signal) or the centroid of the "place" object (usually a city). 
 
 There is a lot of documentation at (https://developers.twitter.com) and at the GitHub pages for Tweepy and Twarc!
 
