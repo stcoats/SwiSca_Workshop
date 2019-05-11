@@ -21,7 +21,8 @@ args = parser.parse_args()
 filepath = './'+args.archive_dir+'/tweetdata/'
 #filepath = os.path.abspath("./tweetdata")
 filepath1 = filepath+'/map.html'
-files = [x for y in [glob.glob(e, recursive = True) for e in [filepath+'/**/*.json',filepath+'/*.jsonl',filepath+'/*.gz']] for x in y]
+files = [x for y in [glob.glob(e, recursive = True) for e in [filepath+'/**/*.json',filepath+'/*.jsonl',filepath+'/*.gz',filepath+'/**/*.jsonl',filepath+'/**/*.gz']] for x in y]
+
 def centr(coords):
     return [(coords[0][0][0]+coords[0][1][0])/2,(coords[0][0][1]+coords[0][1][1])/2]
 
@@ -58,8 +59,10 @@ for x in files:
         try:
             df1 = df.loc[(df["coordinates"].notnull())|(df["place"].notnull())].reset_index(drop=True).copy()
             df1["coords"] = df1["coordinates"].fillna(df1["place"])
-            df1["coords"] = df1["coordinates"].fillna(json_normalize(df1["coords"])["bounding_box.coordinates"])
-            df1["coords"] = [x if len(x)!=1 else centr(x) for x in df1["coords"]]
+            df1["coords"] = [centr(x) if len(x)==1 else json_normalize(x)["coordinates"][0] for x in df1["coordinates"].fillna(json_normalize(df1["coords"])["bounding_box.coordinates"])]
+            
+            #df1["coords"] = df1["coordinates"].fillna(json_normalize(df1["coords"])["bounding_box.coordinates"])
+            #df1["coords"] = [x if len(x)!=1 else centr(x) for x in df1["coords"]]
             if "extended_tweet" in df1.columns:
                 df1["tex"] = [x["text"] if str(x["extended_tweet"]) == "nan" else json_normalize(x["extended_tweet"])["full_text"][0] for i,x in df1.iterrows()]
                 df1["coords"] = [x[::-1] for x in df1["coords"]]
@@ -102,14 +105,13 @@ for z,x in enumerate(words):
                             name=x))#.add_to(this_map)
         this_map.add_child(fgv)
 folium.LayerControl().add_to(this_map)
-#use df.apply(,axis=1) to "iterate" through every row in your dataframe
-#locations_df.apply(plotDot, axis = 1)
 
-this_map.fit_bounds(this_map.get_bounds())
 #Set the zoom to the maximum possible
-this_map.save(filepath1)
+this_map.fit_bounds(this_map.get_bounds())
 
 #Save the map to an HTML file
-#this_map.save('/home/cloud-user/taito_wrk/DONOTREMOVE/Hackathon19/simple_dot_plot.html')
+this_map.save(filepath1)
+
+
 webbrowser.open('file://' + os.path.abspath(filepath1))
 
