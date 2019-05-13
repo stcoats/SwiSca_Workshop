@@ -90,9 +90,9 @@ colors = ['#e6194b', '#3cb44b', '#ffe119',
 for z,x in enumerate(words):
     df = locations_df[locations_df["tex"].str.contains("\\b"+x+".+?\\b", regex = True)].reset_index(drop=True)
     fgv = folium.FeatureGroup(name=x)
+    df = df.iloc[0:1000]
     for i,y in df.iterrows():
-        
-        test = folium.Html(linkify(y.tex), script=True) # i'm assuming this bit runs fine
+        test = folium.Html(linkify(y.tex), script=True) 
         iframe = branca.element.IFrame(html=test, width=450, height=150)
         fgv.add_child(folium.CircleMarker(location=y.coords,
                             radius=4,
