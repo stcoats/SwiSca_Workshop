@@ -25,7 +25,12 @@ for x in files:
             try:
                 df["screen_name"] = json_normalize(df["user"])["screen_name"]
                 df["country"] = ["None" if str(x["place"])=="None" else json_normalize(x["place"])["country"].values[0] for i,x in df.iterrows()]
+                if "full_text" in df.columns:
+                    df["text"] = df["full_text"]
+                else:
+                    df["text"] = df["text"]
                 df_t = df_t.append(df[["screen_name","country","text"]])
             except:
                 continue
 df_t.to_csv(output_file)
+
