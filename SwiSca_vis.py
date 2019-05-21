@@ -63,7 +63,7 @@ for x in files:
             
             #df1["coords"] = df1["coordinates"].fillna(json_normalize(df1["coords"])["bounding_box.coordinates"])
             #df1["coords"] = [x if len(x)!=1 else centr(x) for x in df1["coords"]]
-            if "extended_tweet" in df1.columns:
+            if "full_text" in df1.columns:
                 df1["tex"] = [x["text"] if str(x["extended_tweet"]) == "nan" else json_normalize(x["extended_tweet"])["full_text"][0] for i,x in df1.iterrows()]
                 df1["coords"] = [x[::-1] for x in df1["coords"]]
                 locations_df = locations_df.append(df1[["coords","tex"]])
@@ -87,14 +87,15 @@ colors = ['#e6194b', '#3cb44b', '#ffe119',
     '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080']
 #colors = get_colors(len(words))
 
+fgv = {}
 for z,x in enumerate(words):
     df = locations_df[locations_df["tex"].str.contains("\\b"+x+".+?\\b", regex = True)].reset_index(drop=True)
-    fgv = folium.FeatureGroup(name=x)
+    fgv["{0}".format(x)] = folium.FeatureGroup(name=x)
     df = df.iloc[0:1000]
     for i,y in df.iterrows():
         test = folium.Html(linkify(y.tex), script=True) 
         iframe = branca.element.IFrame(html=test, width=450, height=150)
-        fgv.add_child(folium.CircleMarker(location=y.coords,
+        fgv[x].add_child(folium.CircleMarker(location=y.coords,
                             radius=4,
                             popup = folium.Popup(test, max_width=450, parse_html=True),
                             color = colors[z],
@@ -103,11 +104,12 @@ for z,x in enumerate(words):
                             fill_color=colors[z],
                             fill_opacity=0.5,
                             name=x))#.add_to(this_map)
-        this_map.add_child(fgv)
-folium.LayerControl().add_to(this_map)
+        this_map.add_child(fgv[x])
+
 
 #Set the zoom to the maximum possible
 this_map.fit_bounds(this_map.get_bounds())
+folium.LayerControl().add_to(this_map)
 
 #Save the map to an HTML file
 this_map.save(filepath1)
