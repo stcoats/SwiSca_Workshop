@@ -1,7 +1,7 @@
 
 ## SwiSca_Workshop
 
-Some instructions, scripts, and examples for the workshop "Swearing on Twitter" at the [6th Swearing in Scandinavia symposium](https://swisca.wixsite.com/swisca6)
+Some instructions, scripts, and examples for the workshop "Swearing on Twitter" at the [6th Swearing in Scandinavia symposium](https://swisca.wixsite.com/swisca6).
 
 These instructions will guide you through the process of setting up a Twitter developer's account and collecting data from Twitter using Python and the [Tweepy](https://github.com/tweepy/tweepy) and [Twarc](https://github.com/DocNow/twarc) libraries.
 
@@ -17,5 +17,5 @@ The scripts in the folder can handle the "extended_tweet" metadata introduced in
 
 There is a lot of documentation at (https://developers.twitter.com) and at the GitHub pages for Tweepy and Twarc!
 
-During the symposium the workshop will only have about 15 minutes, so if you want to follow along, get started by going through these documents and setting everything up! You can ask questions in the symposium.
+During the symposium the workshop will only have about 30 minutes, so if you want to follow along, get started by going through these documents and setting everything up! You can ask questions in the symposium.
 
