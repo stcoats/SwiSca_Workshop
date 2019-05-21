@@ -64,13 +64,11 @@ for x in files:
             #df1["coords"] = df1["coordinates"].fillna(json_normalize(df1["coords"])["bounding_box.coordinates"])
             #df1["coords"] = [x if len(x)!=1 else centr(x) for x in df1["coords"]]
             if "full_text" in df1.columns:
-                df1["tex"] = [x["text"] if str(x["extended_tweet"]) == "nan" else json_normalize(x["extended_tweet"])["full_text"][0] for i,x in df1.iterrows()]
-                df1["coords"] = [x[::-1] for x in df1["coords"]]
-                locations_df = locations_df.append(df1[["coords","tex"]])
+                df1["tex"] = df["full_text"]
             else:
-                df1["tex"] = df1["full_text"]
-                df1["coords"] = [x[::-1] for x in df1["coords"]]
-                locations_df = locations_df.append(df1[["coords","tex"]])
+                df1["tex"] = df1["text"]   
+            df1["coords"] = [x[::-1] for x in df1["coords"]]
+            locations_df = locations_df.append(df1[["coords","tex"]]).reset_index(drop=True)
         except:
             continue
 
