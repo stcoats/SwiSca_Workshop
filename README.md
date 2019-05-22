@@ -19,3 +19,5 @@ There is a lot of documentation at (https://developers.twitter.com) and at the G
 
 During the symposium the workshop will only have about 30 minutes, so if you want to follow along, get started by going through these documents and setting everything up! You can ask questions in the symposium.
 
+Here are the [slides](http://cc.oulu.fi/~scoats/SwiSca_Workshop.slides.html#/) shown during the workshop.
+
